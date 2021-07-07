@@ -4,10 +4,10 @@ services:
   nginx:
     build: ./docker/nginx
     volumes:
-    - /data/api.tienngay:/var/www/sandbox_api
-    - /data/cpanel.tienngay:/var/www/sandbox_cpanel
-    - /data/sandbox_invest:/var/www/sandbox_invest
-    - /data/frontend_invest:/var/www/frontend_invest
+    - /data/api.tienngay:/var/www/api.tienngay
+    - /data/cpanel.tienngay:/var/www/cpanel.tienngay
+    - /data/api.invest:/var/www/api.invest
+    - /data/frontend.invest:/var/www/frontend.invest
     # Logs
     - ./docker/nginx/log:/var/log/nginx
     ports:
@@ -22,10 +22,10 @@ services:
   php:
     build: ./docker/php
     volumes:
-      - /data/api.tienngay:/var/www/sandbox_api
-      - /data/cpanel.tienngay:/var/www/sandbox_cpanel
-      - /data/sandbox_invest:/var/www/sandbox_invest
-      - /data/frontend_invest:/var/www/frontend_invest
+      - /data/api.tienngay:/var/www/api.tienngay
+      - /data/cpanel.tienngay:/var/www/cpanel.tienngay
+      - /data/api.invest:/var/www/api.invest
+      - /data/frontend.invest:/var/www/frontend.invest
       # Logs
       - ./docker/php/log:/var/log/php
     networks:
@@ -57,55 +57,55 @@ services:
       - "3306:3306"
 
   # Selenium
-  selenium:
-    image: selenium/standalone-chrome
-    ports:
-      - "4444:4444"
-      - "7900:7900"
-    volumes:
-      - ./docker/selenium/shm:/dev/shm
-    networks:
-      - all
+  # selenium:
+  #   image: selenium/standalone-chrome
+  #   ports:
+  #     - "4444:4444"
+  #     - "7900:7900"
+  #   volumes:
+  #     - ./docker/selenium/shm:/dev/shm
+  #   networks:
+  #     - all
 
   # ELK ES
-  elasticsearch:
-    build: ./docker/elasticsearch
-    environment:
-      - discovery.type=single-node
-    volumes:
-      - ./docker/elasticsearch/data:/usr/share/elasticsearch/data
-      - ./docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - all
+  # elasticsearch:
+  #   build: ./docker/elasticsearch
+  #   environment:
+  #     - discovery.type=single-node
+  #   volumes:
+  #     - ./docker/elasticsearch/data:/usr/share/elasticsearch/data
+  #     - ./docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   networks:
+  #     - all
 
   # ELK Kibana
-  kibana:
-    build: ./docker/kibana
-    volumes:
-      - ./docker/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-    ports:
-      - "5601:5601"
-    networks:
-      - all
-    depends_on:
-      - elasticsearch
+  # kibana:
+  #   build: ./docker/kibana
+  #   volumes:
+  #     - ./docker/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+  #   ports:
+  #     - "5601:5601"
+  #   networks:
+  #     - all
+  #   depends_on:
+  #     - elasticsearch
 
   # ELK Logstash
-  logstash:
-    build: ./docker/logstash
-    volumes:
-      - ./docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./docker/logstash/pipeline:/usr/share/logstash/pipeline
-      # Log
-      - ./docker/php/log:/var/log/php
-      - ./docker/nginx/log:/var/log/nginx
-    networks:
-      - all
-    depends_on:
-      - elasticsearch
+  # logstash:
+  #   build: ./docker/logstash
+  #   volumes:
+  #     - ./docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+  #     - ./docker/logstash/pipeline:/usr/share/logstash/pipeline
+  #     # Log
+  #     - ./docker/php/log:/var/log/php
+  #     - ./docker/nginx/log:/var/log/nginx
+  #   networks:
+  #     - all
+  #   depends_on:
+  #     - elasticsearch
 
 networks: 
   all:
