@@ -1,3 +1,5 @@
 /app
 /.idea
+/docker/elasticsearch/data
+/docker/jenkins/data
 .DS_Store

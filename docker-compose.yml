@@ -1,144 +1,112 @@
 version: "3"
 services:
   # Web
-  # nginx:
-  #   build: ./docker/nginx
-  #   volumes:
-  #   - ./app:/var/www
-  #   ports:
-  #     - "8080:80"
-  #     - "8081:81"
-  #     - "8082:82"
-  #     - "8083:83"
-  #     - "8084:84"
-  #     - "8085:85"
-  #     - "8087:87"
-  #   depends_on:
-  #     - php
+  nginx:
+    build: ./docker/nginx
+    volumes:
+    - F:/Data/api.tienngay:/var/www/sandbox_api
+    - F:/Data/cpanel.tienngay:/var/www/sandbox_cpanel
+    - F:/Data/sandbox_invest:/var/www/sandbox_invest
+    - F:/Data/frontend_invest:/var/www/frontend_invest
+    # Logs
+    - F:/Data/docker-lab/docker/nginx/log:/var/log/nginx
+    ports:
+      - "81:81"
+      - "82:82"
+      - "83:83"
+      - "84:84"
+    networks:
+      - all
 
-  # PHP 5.6 version
-  # php56:
-  #  build: ./docker/php56
-  #  volumes:
-  #    - ./app:/var/www
-  #  depends_on:
-  #    - mysql
-  #    - redis
-
-  # PHP service
-  # php:
-  #   build: ./docker/php
-  #   volumes:
-  #     - ./app:/var/www
-
-  # Node service
-  # node:
-  #  build: ./docker/node
-  #  volumes:
-  #    - ./app/WebhookCustomerLabs:/home/node/app
-  #  ports:
-  #    - "8086:4082"
-  #  depends_on:
-  #    - mongodb
-  #    - redis
-
-  # MySql
-  # mysql:
-  #  build: ./docker/mysql
-  #  environment:
-  #    - MYSQL_USER=homestead
-  #    - MYSQL_PASSWORD=secret
-  #    - MYSQL_ROOT_PASSWORD=secret
-  #    - MYSQL_ROOT_HOST=%
-  #  volumes:
-  #    - ./docker/mysql/data:/var/lib/mysql
-  #  ports:
-  #    - "3306:3306"
-
-  # PostgreSql
-  # postgresql:
-  #   build: ./docker/postgresql
-  #   environment:
-  #     - POSTGRES_USER=homestead
-  #     - POSTGRES_PASSWORD=secret
-  #   volumes:
-  #     - /Users/macbook/Data/docker/docker/postgresql/db:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
-
-  # ElasticSearch
-  # elasticsearch:
-  #   build: ./docker/elasticsearch
-  #   environment:
-  #     - discovery.type=single-node
-  #     - http.port=9200
-  #     - http.cors.enabled=true
-  #     - http.cors.allow-origin=http://localhost:1358,http://127.0.0.1:1358
-  #     - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
-  #     - http.cors.allow-credentials=true
-  #   volumes:
-  #     - /Users/macbook/Data/docker/docker/elasticsearch/db:/usr/share/elasticsearch/data
-  #   ports:
-  #     - 9200:9200
-
-  # # Elasticsearch Gui
-  # elasticsearchgui:
-  #   image: appbaseio/dejavu
-  #   ports:
-  #     - 1358:1358
+  # PHP
+  php:
+    build: ./docker/php
+    volumes:
+      - F:/Data/api.tienngay:/var/www/sandbox_api
+      - F:/Data/cpanel.tienngay:/var/www/sandbox_cpanel
+      - F:/Data/sandbox_invest:/var/www/sandbox_invest
+      - F:/Data/frontend_invest:/var/www/frontend_invest
+      # Logs
+      - F:/Data/docker-lab/docker/php/log:/var/log/php
+    networks:
+      - all
 
   # Mongodb
-  # mongodb:
-  #  build: ./docker/mongodb
-  #  volumes:
-  #    - /Users/macbook/Data/docker/docker/mongodb/db:/data/db
-  #  ports:
-  #    - "27017:27017"
-
-  # Tomcat
-  tomcat:
-    build: ./docker/tomcat
+  mongodb:
+    build: ./docker/mongodb
+    # volumes:
+    #   - F:/Data/docker-lab/docker/mongodb/db:/data/db
+    #   - F:/Data/docker-lab/docker/mongodb/mongo-entrypoint:/docker-entrypoint-initdb.d
+    #   - F:/Data/docker-lab/docker/mongodb/mongoconfig:/data/configdb
     ports:
-     - "8888:8080"
+      - "27017:27017"
+    networks:
+      - all
 
-  # Oracle DB
-  # oracledb:
-  #   build: ./docker/oracledb
-  #   volumes:
-  #     - /Users/macbook/Data/docker/docker/oracledb/db:/u01/app/oracle
-  #   ports:
-  #   - "1521:1521"
-  #   - "8080:8080"
+  # Mysql
+  mysql:
+    build: ./docker/mysql
+    environment:
+      - MYSQL_USER=invest
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
-  # Weblogic
-  # weblogic:
-  #   image: "container-registry.oracle.com/middleware/weblogic:12.2.1.3"
-  #   environment:
-  #     - ADMINISTRATION_PORT_ENABLED=false
-  #   volumes:
-  #     - /Users/macbook/Data/docker/docker/weblogic/properties:/u01/oracle/properties
-  #   ports:
-  #   - "7001:7001"
-  #   - "9002:9002"
+  # Selenium
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    volumes:
+      - F:/Data/docker-lab/docker/selenium/shm:/dev/shm
+    networks:
+      - all
 
-  # Redis
-  # redis:
-  #   build: ./docker/redis
+  # ELK ES
+  elasticsearch:
+    build: ./docker/elasticsearch
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - F:/Data/docker-lab/docker/elasticsearch/data:/usr/share/elasticsearch/data
+      - F:/Data/docker-lab/docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - all
 
-  # Prometheus
-  # prometheus:
-  #   build: ./docker/prometheus
-  #   volumes:
-  #     - /Users/macbook/Data/docker/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-  #   ports:
-  #     - "9090:9090"
+  # ELK Kibana
+  kibana:
+    build: ./docker/kibana
+    volumes:
+      - F:/Data/docker-lab/docker/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - "5601:5601"
+    networks:
+      - all
+    depends_on:
+      - elasticsearch
 
-  # Grafana
-  # grafana:
-  #   build: ./docker/grafana
-  #   environment:
-  #     - GF_AUTH_BASIC_ENABLED=false
-  #     - GF_AUTH_ANONYMOUS_ENABLED=true
-  #     - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-  #   ports:
-  #     - "3000:3000"
+  # ELK Logstash
+  logstash:
+    build: ./docker/logstash
+    volumes:
+      - F:/Data/docker-lab/docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - F:/Data/docker-lab/docker/logstash/pipeline:/usr/share/logstash/pipeline
+      # Log
+      - F:/Data/docker-lab/docker/php/log:/var/log/php
+      - F:/Data/docker-lab/docker/nginx/log:/var/log/nginx
+    networks:
+      - all
+    depends_on:
+      - elasticsearch
+
+networks: 
+  all:
+    driver: bridge
