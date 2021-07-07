@@ -4,12 +4,12 @@ services:
   nginx:
     build: ./docker/nginx
     volumes:
-    - F:/Data/api.tienngay:/var/www/sandbox_api
-    - F:/Data/cpanel.tienngay:/var/www/sandbox_cpanel
-    - F:/Data/sandbox_invest:/var/www/sandbox_invest
-    - F:/Data/frontend_invest:/var/www/frontend_invest
+    - /data/api.tienngay:/var/www/sandbox_api
+    - /data/cpanel.tienngay:/var/www/sandbox_cpanel
+    - /data/sandbox_invest:/var/www/sandbox_invest
+    - /data/frontend_invest:/var/www/frontend_invest
     # Logs
-    - F:/Data/docker-lab/docker/nginx/log:/var/log/nginx
+    - ./docker/nginx/log:/var/log/nginx
     ports:
       - "81:81"
       - "82:82"
@@ -22,22 +22,22 @@ services:
   php:
     build: ./docker/php
     volumes:
-      - F:/Data/api.tienngay:/var/www/sandbox_api
-      - F:/Data/cpanel.tienngay:/var/www/sandbox_cpanel
-      - F:/Data/sandbox_invest:/var/www/sandbox_invest
-      - F:/Data/frontend_invest:/var/www/frontend_invest
+      - /data/api.tienngay:/var/www/sandbox_api
+      - /data/cpanel.tienngay:/var/www/sandbox_cpanel
+      - /data/sandbox_invest:/var/www/sandbox_invest
+      - /data/frontend_invest:/var/www/frontend_invest
       # Logs
-      - F:/Data/docker-lab/docker/php/log:/var/log/php
+      - ./docker/php/log:/var/log/php
     networks:
       - all
 
   # Mongodb
   mongodb:
     build: ./docker/mongodb
-    # volumes:
-    #   - F:/Data/docker-lab/docker/mongodb/db:/data/db
-    #   - F:/Data/docker-lab/docker/mongodb/mongo-entrypoint:/docker-entrypoint-initdb.d
-    #   - F:/Data/docker-lab/docker/mongodb/mongoconfig:/data/configdb
+    volumes:
+      - ./docker/mongodb/db:/data/db
+      - ./docker/mongodb/mongo-entrypoint:/docker-entrypoint-initdb.d
+      - ./docker/mongodb/mongoconfig:/data/configdb
     ports:
       - "27017:27017"
     networks:
@@ -63,7 +63,7 @@ services:
       - "4444:4444"
       - "7900:7900"
     volumes:
-      - F:/Data/docker-lab/docker/selenium/shm:/dev/shm
+      - ./docker/selenium/shm:/dev/shm
     networks:
       - all
 
@@ -73,8 +73,8 @@ services:
     environment:
       - discovery.type=single-node
     volumes:
-      - F:/Data/docker-lab/docker/elasticsearch/data:/usr/share/elasticsearch/data
-      - F:/Data/docker-lab/docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./docker/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -85,7 +85,7 @@ services:
   kibana:
     build: ./docker/kibana
     volumes:
-      - F:/Data/docker-lab/docker/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./docker/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - "5601:5601"
     networks:
@@ -97,11 +97,11 @@ services:
   logstash:
     build: ./docker/logstash
     volumes:
-      - F:/Data/docker-lab/docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - F:/Data/docker-lab/docker/logstash/pipeline:/usr/share/logstash/pipeline
+      - ./docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./docker/logstash/pipeline:/usr/share/logstash/pipeline
       # Log
-      - F:/Data/docker-lab/docker/php/log:/var/log/php
-      - F:/Data/docker-lab/docker/nginx/log:/var/log/nginx
+      - ./docker/php/log:/var/log/php
+      - ./docker/nginx/log:/var/log/nginx
     networks:
       - all
     depends_on:
