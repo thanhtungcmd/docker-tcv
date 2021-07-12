@@ -34,6 +34,9 @@ services:
   # Mongodb
   mongodb:
     build: ./docker/mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=tungbt
+      - MONGO_INITDB_ROOT_PASSWORD=12345678
     volumes:
       - ./docker/mongodb/db:/data/db
       - ./docker/mongodb/mongo-entrypoint:/docker-entrypoint-initdb.d
