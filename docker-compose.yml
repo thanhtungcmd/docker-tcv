@@ -4,17 +4,19 @@ services:
   nginx:
     build: ./docker/nginx
     volumes:
-    - /data/api.tienngay:/var/www/api.tienngay
-    - /data/cpanel.tienngay:/var/www/cpanel.tienngay
-    - /data/api.invest:/var/www/api.invest
-    - /data/frontend.invest:/var/www/frontend.invest
-    # Logs
-    - ./docker/nginx/log:/var/log/nginx
+      - /data/api.tienngay:/var/www/api.tienngay
+      - /data/cpanel.tienngay:/var/www/cpanel.tienngay
+      - /data/api.invest:/var/www/api.invest
+      - /data/frontend.invest:/var/www/frontend.invest
+      - /data/core.tienngay:/var/www/core.tienngay
+      # Logs
+      - ./docker/nginx/log:/var/log/nginx
     ports:
       - "81:81"
       - "82:82"
       - "83:83"
       - "84:84"
+      - "85:85"
     networks:
       - all
 
@@ -26,6 +28,7 @@ services:
       - /data/cpanel.tienngay:/var/www/cpanel.tienngay
       - /data/api.invest:/var/www/api.invest
       - /data/frontend.invest:/var/www/frontend.invest
+      - /data/core.tienngay:/var/www/core.tienngay
       # Logs
       - ./docker/php/log:/var/log/php
     networks:
@@ -58,6 +61,8 @@ services:
       - ./docker/mysql/data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - all
 
   # Selenium
   # selenium:
