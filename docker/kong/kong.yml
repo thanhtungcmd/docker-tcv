@@ -1,0 +1,11 @@
+_format_version: "2.1"
+# Service
+services:
+- name: api-tienngay
+  url: http://nginx:82
+  routes:
+  - name: test
+    paths: 
+    - /api-tienngay
+    methods:
+    - POST
