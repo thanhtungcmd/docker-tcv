@@ -20,6 +20,9 @@ RUN docker-php-ext-install imap
 RUN apt-get install zlib1g-dev libicu-dev -y
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl
+RUN apt-get install -y gnupg2 gnupg gnupg1 libgpgme11-dev
+RUN pecl install gnupg \
+	&& docker-php-ext-enable gnupg
 
 # Excel
 RUN apt-get install zlib1g-dev libpng-dev libxml2-dev -y
