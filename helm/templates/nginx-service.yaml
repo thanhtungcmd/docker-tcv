@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  labels:
+    {{- include "nginx.labels" . | nindent 4 }}
+spec:
+  ports:
+    {{- range $port := .Values.nginx.ports }}
+    - name: "{{ $port }}"
+      port: {{ $port }}
+      targetPort: {{ $port }}
+    {{- end }}
+  selector:
+    {{- include "php.matchLabels" . | nindent 4 }}

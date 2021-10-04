@@ -7,5 +7,7 @@ services:
   - name: test
     paths: 
     - /api-tienngay
-    methods:
-    - POST
+# Plugin
+plugins:
+- name: prometheus
+  service: api-tienngay

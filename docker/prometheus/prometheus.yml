@@ -1,7 +1,8 @@
 global:
   scrape_interval: 15s
 scrape_configs:
-  - job_name: "My Node"
-    scrape_interval: 5s
+  - job_name: "Kong Gateway"
+    scrape_interval: 15s
+    metrics_path: '/metrics'
     static_configs:
-      - targets: ["192.168.10.25:5000"]
+      - targets: ["kong:8001"]

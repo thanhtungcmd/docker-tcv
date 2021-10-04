@@ -4,11 +4,11 @@ services:
   nginx:
     build: ./docker/nginx
     volumes:
-      - /data/api.tienngay:/var/www/api.tienngay
-      - /data/cpanel.tienngay:/var/www/cpanel.tienngay
-      - /data/api.invest:/var/www/api.invest
-      - /data/frontend.invest:/var/www/frontend.invest
-      - /data/core.tienngay:/var/www/core.tienngay
+      - ../api.tienngay:/var/www/api.tienngay
+      - ../cpanel.tienngay:/var/www/cpanel.tienngay
+      - ../api.invest:/var/www/api.invest
+      - ../frontend.invest:/var/www/frontend.invest
+      - ../core.tienngay:/var/www/core.tienngay
       # Logs
       - ./docker/nginx/log:/var/log/nginx
     ports:
@@ -24,11 +24,11 @@ services:
   php:
     build: ./docker/php
     volumes:
-      - /data/api.tienngay:/var/www/api.tienngay
-      - /data/cpanel.tienngay:/var/www/cpanel.tienngay
-      - /data/api.invest:/var/www/api.invest
-      - /data/frontend.invest:/var/www/frontend.invest
-      - /data/core.tienngay:/var/www/core.tienngay
+      - ../api.tienngay:/var/www/api.tienngay
+      - ../cpanel.tienngay:/var/www/cpanel.tienngay
+      - ../api.invest:/var/www/api.invest
+      - ../frontend.invest:/var/www/frontend.invest
+      - ../core.tienngay:/var/www/core.tienngay
       # Logs
       - ./docker/php/log:/var/log/php
     networks:
@@ -53,9 +53,9 @@ services:
   mysql:
     build: ./docker/mysql
     environment:
-      - MYSQL_USER=invest
-      - MYSQL_PASSWORD=secret
-      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=tungbt
+      - MYSQL_PASSWORD=12345678
+      - MYSQL_ROOT_PASSWORD=12345678
       - MYSQL_ROOT_HOST=%
     volumes:
       - ./docker/mysql/data:/var/lib/mysql
@@ -64,27 +64,57 @@ services:
     networks:
       - all
 
-  # Kong
-  kong:
-    image: kong:latest
-    volumes:
-      - ./docker/kong/kong.yml:/usr/local/kong/declarative/kong.yml
-      - ./docker/kong/logs:/usr/local/kong/logs
-    environment:
-      - KONG_DATABASE=off
-      - KONG_DECLARATIVE_CONFIG=/usr/local/kong/declarative/kong.yml
-      - KONG_PROXY_ACCESS_LOG=/dev/stdout
-      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
-      - KONG_PROXY_ERROR_LOG=/dev/stderr
-      - KONG_ADMIN_ERROR_LOG=/dev/stderr
-      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
-    ports:
-      - "8000:8000"
-      - "8443:8443"
-      - "8001:8001"
-      - "8444:8444"
-    networks:
-      - all
+  # Kong Gateway
+  # kong:
+  #   image: kong:latest
+  #   volumes:
+  #     - ./docker/kong/kong.yml:/usr/local/kong/declarative/kong.yml
+  #   environment:
+  #     - KONG_DATABASE=off
+  #     - KONG_DECLARATIVE_CONFIG=/usr/local/kong/declarative/kong.yml
+  #     - KONG_PROXY_ACCESS_LOG=/dev/stdout
+  #     - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+  #     - KONG_PROXY_ERROR_LOG=/dev/stderr
+  #     - KONG_ADMIN_ERROR_LOG=/dev/stderr
+  #     - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+  #   ports:
+  #     - "8000:8000"
+  #     - "8443:8443"
+  #     - "8001:8001"
+  #     - "8444:8444"
+  #   networks:
+  #     - all
+
+  # Monitoring Prometheus
+  # prometheus:
+  #   image: prom/prometheus:v2.28.1
+  #   volumes:
+  #     - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #   expose:
+  #     - 9090
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - all
+
+  # Monitoring Grafana
+  # grafana:
+  #   image: grafana/grafana:8.0.6
+  #   volumes:
+  #     - ./docker/grafana/dashboards:/etc/grafana/provisioning/dashboards
+  #     - ./docker/grafana/datasources:/etc/grafana/provisioning/datasources
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=tungbt
+  #     - GF_SECURITY_ADMIN_PASSWORD=12345678
+  #     - GF_USERS_ALLOW_SIGN_UP=false
+  #   expose:
+  #     - 3000
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - all
 
   # Selenium
   # selenium:

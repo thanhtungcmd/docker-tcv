@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "mysql.labels" . | nindent 4 }}
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "mysql.matchLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "mysql.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_PASSWORD
+              value: "12345678"
+            - name: MYSQL_ROOT_HOST
+              value: '%'
+            - name: MYSQL_ROOT_PASSWORD
+              value: "12345678"
+            - name: MYSQL_USER
+              value: tungbt
+          image: mysql
+          name: mysql
+          ports:
+            - containerPort: {{ .Values.mysql.port }}
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/{{ .Values.mysql.pvc }}
+              name: mysql-pvc
+      restartPolicy: Always
+      volumes:
+        - name: mysql-pvc
+          persistentVolumeClaim:
+            claimName: mysql-pvc
