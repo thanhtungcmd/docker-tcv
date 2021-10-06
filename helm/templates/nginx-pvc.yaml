@@ -5,8 +5,9 @@ metadata:
   labels:
     {{- include "nginx.labels" . | nindent 4 }}
 spec:
+  storageClassName: hostpath
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 5Gi

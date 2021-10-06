@@ -17,7 +17,7 @@ spec:
         {{- include "nginx.labels" . | nindent 8 }}
     spec:
       containers:
-        - image: nginx
+        - image: nginx:1.19
           name: nginx
           ports:
             {{- range $port := .Values.nginx.ports }}
@@ -25,10 +25,8 @@ spec:
             {{- end }}
           resources: {}
           volumeMounts:
-            {{- range $subPath := .Values.php.pvc }}
-            - mountPath: /var/www/{{ $subPath }}
+            - mountPath: /var/www
               name: nginx-pvc
-            {{- end }}
       restartPolicy: Always
       volumes:
         - name: nginx-pvc

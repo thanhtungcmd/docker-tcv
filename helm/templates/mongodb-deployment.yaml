@@ -22,7 +22,7 @@ spec:
               value: "12345678"
             - name: MONGO_INITDB_ROOT_USERNAME
               value: tungbt
-          image: mongodb
+          image: mongo:4.4
           name: mongodb
           ports:
             - containerPort: {{ .Values.mongodb.port }}

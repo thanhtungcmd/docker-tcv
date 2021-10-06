@@ -16,7 +16,9 @@ spec:
     spec:
       containers:
         - name: php
-          image: php
+          image: php:7.3-fpm
+          ports:
+            - containerPort: 9000
           resources: {}
           volumeMounts:
           {{- range $subPath := .Values.php.pvc }}

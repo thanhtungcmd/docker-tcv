@@ -13,3 +13,4 @@ spec:
     {{- end }}
   selector:
     {{- include "php.matchLabels" . | nindent 4 }}
+  type: LoadBalancer
