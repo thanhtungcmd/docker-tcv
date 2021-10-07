@@ -64,6 +64,14 @@ services:
     networks:
       - all
 
+  # JAVA
+  java:
+    build: ./docker/java
+    ports:
+      - "87:8080"
+    networks:
+      - all
+  
   # Kong Gateway
   # kong:
   #   image: kong:latest
