@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpfpm
+  labels:
+    chart: tienngay
+spec:
+  selector:
+    matchLabels:
+      app: phpfpm
+  template:
+    metadata:
+      labels:
+        app: phpfpm
+    spec:
+      containers:
+        - name: phpfpm
+          image: thanhtungcmd/phpfpm
+          ports:
+            - containerPort: 9000
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    chart: tienngay
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: thanhtungcmd/nginx
+          ports:
+            - containerPort: 81
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-volume
+            - mountPath: /var/log/nginx
+              name: nginx-log
+      volumes:
+        - name: nginx-volume
+          configMap:
+            name: nginx-configmap
+        - name: nginx-log
+          hostPath:
+            path: /data/log
