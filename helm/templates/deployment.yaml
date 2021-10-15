@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: phpfpm
+  name: phpfpm-deployment
   labels:
     chart: tienngay
 spec:
   selector:
     matchLabels:
-      app: phpfpm
+      app: phpfpm-deployment
   template:
     metadata:
       labels:
-        app: phpfpm
+        app: phpfpm-deployment
     spec:
       containers:
         - name: phpfpm
@@ -40,17 +40,17 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: nginx-deployment
   labels:
     chart: tienngay
 spec:
   selector:
     matchLabels:
-      app: nginx
+      app: nginx-deployment
   template:
     metadata:
       labels:
-        app: nginx
+        app: nginx-deployment
     spec:
       containers:
         - name: nginx
@@ -73,17 +73,17 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: mysql-deployment
   labels:
     chart: tienngay
 spec:
   selector:
     matchLabels:
-      app: mysql
+      app: mysql-deployment
   template:
     metadata:
       labels:
-        app: mysql
+        app: mysql-deployment
     spec:
       containers:
         - name: mysql

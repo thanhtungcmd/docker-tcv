@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: phpfpm
+  name: phpfpm-service
   labels:
     chart: tienngay
 spec:
@@ -10,12 +10,12 @@ spec:
     - port: 9000
       targetPort: 9000
   selector:
-    app: phpfpm
+    app: phpfpm-deployment
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
+  name: nginx-service
   labels:
     chart: tienngay
 spec:
@@ -24,12 +24,12 @@ spec:
     - port: 81
       targetPort: 81
   selector:
-    app: nginx
+    app: nginx-deployment
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-cluster-ip
+  name: mysql-cluster-service
   labels:
     chart: tienngay
 spec:
@@ -38,12 +38,12 @@ spec:
     - port: 3306
       targetPort: 3306
   selector:
-    app: mysql
+    app: mysql-deployment
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-loadbalance-ip
+  name: mysql-loadbalance-service
   labels:
     chart: tienngay
 spec:
@@ -52,4 +52,4 @@ spec:
     - port: 3306
       targetPort: 3306
   selector:
-    app: mysql
+    app: mysql-deployment
