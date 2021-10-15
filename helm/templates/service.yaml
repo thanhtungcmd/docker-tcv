@@ -25,3 +25,31 @@ spec:
       targetPort: 81
   selector:
     app: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-cluster-ip
+  labels:
+    chart: tienngay
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-loadbalance-ip
+  labels:
+    chart: tienngay
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: mysql

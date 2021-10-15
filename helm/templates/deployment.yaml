@@ -28,6 +28,14 @@ spec:
               port: 9000
             initialDelaySeconds: 15
             periodSeconds: 20
+          volumeMounts:
+            - mountPath: /var/www/.env
+              subPath: .env
+              name: php-config
+      volumes:
+        - name: php-config
+          configMap:
+            name: php-configmap
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -61,3 +69,27 @@ spec:
         - name: nginx-log
           hostPath:
             path: /data/log
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    chart: tienngay
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: bitnami/mysql:8.0
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - configMapRef:
+                name: mysql-configmap

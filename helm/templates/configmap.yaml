@@ -9,7 +9,7 @@ data:
     server {
       listen 0.0.0.0:81;
       index index.php index.html;
-      root /var/www/app_test;
+      root /var/www;
 
       access_log /var/log/nginx/access.log;
       error_log /var/log/nginx/error.log;
@@ -35,5 +35,23 @@ metadata:
   labels:
     chart: tienngay
 data:
-  index.php: |-
-    <?php phpinfo(); ?>
+  .env: |-
+    S3_BUCKET=devbucket
+    MYSQL_HOST=mysql-cluster-ip
+    MYSQL_PORT=3306
+    MYSQL_DB=test
+    MYSQL_USER=tungbt
+    MYSQL_PASS=12345678
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+  labels:
+    chart: tienngay
+data:
+  ALLOW_EMPTY_PASSWORD: "yes"
+  MYSQL_USER: "tungbt"
+  MYSQL_PASSWORD: "12345678"
+  MYSQL_DATABASE: "test"
+  MYSQL_AUTHENTICATION_PLUGIN: "mysql_native_password" 
