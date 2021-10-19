@@ -1,0 +1,20 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: php-cronjob
+  labels:
+    chart: tienngay
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: php-cronjob
+              image: thanhtungcmd/phpfpm
+              args:
+                - /bin/sh
+                - -c
+                - date; echo "Job in CronJob"
+          restartPolicy: OnFailure
+  schedule: "* * * * *"

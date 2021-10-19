@@ -51,7 +51,11 @@ configInline:
     - name: generic-cluster-pool
       protocol: layer2
       addresses:
-        - 127.0.0.240/28
+        - 10.64.140.43 – 10.64.140.49
+#        - 192.168.10.240 - 192.168.10.250
+#        - 192.168.0.105 – 192.168.0.111
+#        - 127.0.0.240/28
+#        - 198.51.100.0/24
 
 ## RBAC creation for controller and speaker
 ##

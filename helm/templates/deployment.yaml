@@ -5,6 +5,7 @@ metadata:
   labels:
     chart: tienngay
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: phpfpm-deployment
@@ -16,6 +17,7 @@ spec:
       containers:
         - name: phpfpm
           image: thanhtungcmd/phpfpm
+          imagePullPolicy: Always
           ports:
             - containerPort: 9000
           readinessProbe:
@@ -44,6 +46,7 @@ metadata:
   labels:
     chart: tienngay
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: nginx-deployment
@@ -55,6 +58,7 @@ spec:
       containers:
         - name: nginx
           image: thanhtungcmd/nginx
+          imagePullPolicy: Always
           ports:
             - containerPort: 81
           volumeMounts:
