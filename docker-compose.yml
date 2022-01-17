@@ -63,6 +63,18 @@ services:
       - "3306:3306"
     networks:
       - all
+      
+  # PostgreSql
+  postgresql:
+    build: ./docker/postgresql
+    environment:
+      - POSTGRES_PASSWORD=12345678
+    volumes:
+      - ./docker/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - all
 
   # JAVA
   java:
