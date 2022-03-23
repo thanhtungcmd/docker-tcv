@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+
+  traefik:
+    image: traefik:v2.2
+    ports:
+      - 9093:80
+      - 9090:8080
+    networks:
+      - proxy-net
+    command:
+      - --providers.docker=true
+      - --providers.docker.swarmMode=true
+      - --providers.docker.exposedByDefault=false
+      - --entrypoints.web.address=:80
+      - --api
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --accesslog
+      - --log.level=debug
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=proxy-net
+
+  simpletwo:
+    image: containous/whoami
+    networks:
+      - proxy-net
+    deploy:
+      replicas: 3
+      endpoint_mode: dnsrr
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=proxy-net
+        - traefik.http.services.simpletwo.loadbalancer.server.port=80
+        - traefik.http.routers.simpletwo.service=simpletwo
+        - traefik.http.routers.whoami.entrypoints=web
+        - traefik.http.routers.simpletwo.rule=Host(`simpletwo.lc`)
+
+networks:
+  proxy-net:
+    external: true

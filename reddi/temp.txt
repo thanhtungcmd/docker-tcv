@@ -1,0 +1,17 @@
+docker stack deploy --compose-file reverse-proxy.yml proxy
+docker stack deploy --compose-file docker-compose.yml demo
+
+docker stack rm stackdemo proxy
+
+docker network create --driver=overlay proxy-net
+
+docker stack rm wordpress traefik
+
+
+iptables-save
+iptables -I INPUT -p tcp -m tcp --dport 2377 -j ACCEPT
+iptables -I INPUT -p tcp -m tcp --dport 7946 -j ACCEPT
+iptables -I INPUT -p udp -m udp --dport 7946 -j ACCEPT
+iptables -I INPUT -p udp -m udp --dport 4789 -j ACCEPT
+iptables -I INPUT -p tcp -m tcp --dport 7789 -j ACCEPT
+iptables -I INPUT -p udp -m udp --dport 7789 -j ACCEPT
