@@ -38,7 +38,7 @@ services:
         - traefik.http.services.simpletwo.loadbalancer.server.port=80
         - traefik.http.routers.simpletwo.service=simpletwo
         - traefik.http.routers.whoami.entrypoints=web
-        - traefik.http.routers.simpletwo.rule=Host(`simpletwo.lc`)
+        - traefik.http.routers.simpletwo.rule=Host(`simpletwo.local`)
 
 networks:
   proxy-net:
