@@ -40,6 +40,137 @@ services:
         - traefik.http.routers.whoami.entrypoints=web
         - traefik.http.routers.simpletwo.rule=Host(`simpletwo.local`)
 
+  # KAFKA - Zookeeper
+  zookeeper:
+    image: 'bitnami/zookeeper:3.6.3'
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - proxy-net
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+    
+  # KAFKA - Kafka  
+  kafka:
+    image: 'bitnami/kafka:3.0.1'
+    ports:
+      - '9095:9092'
+    networks:
+      - proxy-net
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    deploy:
+      replicas: 3
+
+  # KAFKA - UI
+  kowl:
+    image: quay.io/cloudhut/kowl:master
+    ports:
+      - '9096:8080'
+    networks:
+      - proxy-net
+    environment:
+      - KAFKA_BROKERS=kafka:9092
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+
+  # REDIS - master
+  redis-master:
+    image: 'bitnami/redis:6.2.6'
+    ports:
+      - '9097:6379'
+    networks:
+      - proxy-net
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=master_password
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+
+  # REDIS - replica
+  redis-replica:
+    image: 'bitnami/redis:6.2.6'
+    ports:
+      - '9098:6379'
+    networks:
+      - proxy-net
+    depends_on:
+      - redis-master
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PORT_NUMBER=6379
+      - REDIS_MASTER_PASSWORD=master_password
+      - REDIS_PASSWORD=replica_password
+
+  # REDIS - replica
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    networks:
+      - proxy-net
+    environment:
+      - REDIS_HOSTS=redis-master:redis-master:6379:0:master_password
+    ports:
+      - "9099:8081"
+
+  # POSTGRE - master
+  postgresql-master:
+    image: 'bitnami/postgresql:14.2.0'
+    networks:
+      - proxy-net
+    ports:
+      - '9080:5432'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_USERNAME=root
+      - POSTGRESQL_PASSWORD=12345678
+      - POSTGRESQL_DATABASE=postgres
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+
+  # POSTGRE - slave
+  postgresql-slave:
+    image: 'bitnami/postgresql:14.2.0'
+    networks:
+      - proxy-net
+    ports:
+      - '9081:5432'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_HOST=postgresql-master
+      - POSTGRESQL_PASSWORD=12345678
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+
+  # POSTGRE - pgadmin4
+  pgadmin4:
+    image: 'dpage/pgadmin4'
+    networks:
+      - proxy-net
+    ports:
+      - '9082:80'
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=12345678
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+
 networks:
   proxy-net:
     external: true
