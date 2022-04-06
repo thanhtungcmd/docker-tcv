@@ -9,6 +9,10 @@ services:
       - ZOO_SERVER_ID=1
       - ZOO_SERVERS=0.0.0.0:2888:3888,zookeeper2:2888:3888,zookeeper3:2888:3888
       - ALLOW_ANONYMOUS_LOGIN=yes
+    deploy:
+      placement:
+        constraints:
+          - node.id==w9eau0
 
   zookeeper2:
     image: 'bitnami/zookeeper:3.8.0'
@@ -18,6 +22,10 @@ services:
       - ZOO_SERVER_ID=2
       - ZOO_SERVERS=zookeeper1:2888:3888,0.0.0.0:2888:3888,zookeeper3:2888:3888
       - ALLOW_ANONYMOUS_LOGIN=yes
+    deploy:
+      placement:
+        constraints:
+          - node.id==a7uy9p
 
   zookeeper3:
     image: 'bitnami/zookeeper:3.8.0'
@@ -27,70 +35,66 @@ services:
       - ZOO_SERVER_ID=3
       - ZOO_SERVERS=zookeeper1:2888:3888,zookeeper2:2888:3888,0.0.0.0:2888:3888
       - ALLOW_ANONYMOUS_LOGIN=yes
+    deploy:
+      placement:
+        constraints:
+          - node.id==4xuy68
     
   # KAFKA - Kafka  
   kafka1:
     image: 'bitnami/kafka:3.1.0'
+    ports:
+      - '9071:9092'
     networks:
       - proxy-net
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
+    deploy:
+      placement:
+        constraints:
+          - node.id==w9eau0
 
   kafka2:
     image: 'bitnami/kafka:3.1.0'
+    ports:
+      - '9072:9092'
     networks:
       - proxy-net
     environment:
       - KAFKA_BROKER_ID=2
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
+    deploy:
+      placement:
+        constraints:
+          - node.id==a7uy9p
 
   kafka3:
     image: 'bitnami/kafka:3.1.0'
+    ports:
+      - '9073:9092'
     networks:
       - proxy-net
     environment:
       - KAFKA_BROKER_ID=3
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
+    deploy:
+      placement:
+        constraints:
+          - node.id==4xuy68
 
   # KAFKA - UI
   kowl1:
     image: quay.io/cloudhut/kowl:master
     ports:
-      - '9071:8080'
+      - '9074:8080'
     networks:
       - proxy-net
     environment:
       - KAFKA_BROKERS=kafka1:9092
-    deploy:
-      placement:
-        constraints:
-          - node.role==manager
-
-  kowl2:
-    image: quay.io/cloudhut/kowl:master
-    ports:
-      - '9072:8080'
-    networks:
-      - proxy-net
-    environment:
-      - KAFKA_BROKERS=kafka2:9092
-    deploy:
-      placement:
-        constraints:
-          - node.role==manager
-
-  kowl3:
-    image: quay.io/cloudhut/kowl:master
-    ports:
-      - '9073:8080'
-    networks:
-      - proxy-net
-    environment:
-      - KAFKA_BROKERS=kafka3:9092
     deploy:
       placement:
         constraints:

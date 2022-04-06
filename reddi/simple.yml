@@ -39,6 +39,8 @@ services:
         - traefik.http.routers.whoami.service=whoami
         - traefik.http.routers.whoami.entrypoints=web
         - traefik.http.routers.whoami.rule=Host(`whoami.local`)
+      placement:
+        max_replicas_per_node: 1
 
   simpletwo:
     image: 192.168.0.72:5000/tungbt/simpletwo:1.0
